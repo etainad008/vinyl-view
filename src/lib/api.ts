@@ -1,5 +1,7 @@
 import type { AlbumQuery, MBID } from './types';
 
+const MAX_COVER_AMOUNT = 25;
+
 const getAlbumJSON = async (album: AlbumQuery) => {
 	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${album.name}" AND artist:"${album.artist}"&fmt=json`;
 	const res = await fetch(API_URI);
@@ -40,6 +42,6 @@ const getAlbumImageByMBID = async (id: MBID): Promise<string> => {
 };
 
 export const getAlbumImages = async (album: AlbumQuery): Promise<Promise<string>[]> => {
-    const albumMBIDs: MBID[] = await getAlbumMBIDImp(album, 5);
+    const albumMBIDs: MBID[] = await getAlbumMBIDImp(album, MAX_COVER_AMOUNT);
     return albumMBIDs.map(getAlbumImageByMBID);
 }
