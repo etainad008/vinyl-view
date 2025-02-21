@@ -30,7 +30,7 @@ const getAlbumMBIDImp = async (album: AlbumQuery, maxAmount: number): Promise<MB
 const getAlbumImageByMBID = async (id: MBID): Promise<string> => {
 	const res = await fetch(`https://coverartarchive.org/release/${id}`);
     if (!res.ok) {
-        return "";
+        return Promise.resolve("");
     }
 
 	const data: any = await res.json();
@@ -39,9 +39,7 @@ const getAlbumImageByMBID = async (id: MBID): Promise<string> => {
         .toSorted((image: any) => image.id)[0].image;
 };
 
-export const getAlbumImages = async (album: AlbumQuery): Promise<string[]> => {
+export const getAlbumImages = async (album: AlbumQuery): Promise<Promise<string>[]> => {
     const albumMBIDs: MBID[] = await getAlbumMBIDImp(album, 5);
-    const albumImages: any[] = await Promise.all(albumMBIDs.map(getAlbumImageByMBID));
-
-    return albumImages.filter(Boolean);
+    return albumMBIDs.map(getAlbumImageByMBID);
 }
