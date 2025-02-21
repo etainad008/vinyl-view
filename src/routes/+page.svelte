@@ -1,12 +1,20 @@
 <script lang="ts">
-    import { getAlbumImage } from "$lib/api";
+    import { getAlbumImages } from "$lib/api";
+    import type { AlbumQuery } from "$lib/types";
 
-    let image: string | null = $state("");
+    let images: string[] = $state([]);
     
     const onclick = async () => {
-        image = await getAlbumImage("Repentless", "Slayer");
+        const query: AlbumQuery = {
+            name: "Repentless",
+            artist: "Slayer"
+        };
+
+        images = await getAlbumImages(query);
     }
 </script>
 
 <button {onclick}>Update</button>
-<img src={image} alt="Album Cover" />
+{#each images as image}
+    <img src={image} alt="Album Cover" />
+{/each}
