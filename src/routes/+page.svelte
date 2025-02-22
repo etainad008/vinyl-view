@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { fade } from "svelte/transition";
+
     import { getAlbumReleases } from "$lib/api";
     import type { AlbumQuery, Album } from "$lib/types";
 
@@ -65,7 +67,7 @@
                             {:then release}
                                 {#if release.cover}
                                     <div class="release">
-                                        <img src={release.cover.image} alt='Album cover for "{release.title}"' />
+                                        <img src={release.cover.image} alt='Album cover for "{release.title}"' in:fade|global={{ duration: 100 }}  />
                                         <button onclick={() => onclickRelease(release)}>{release.title}</button>
                                     </div>
                                 {/if}
