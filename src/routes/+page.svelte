@@ -23,7 +23,7 @@
         <div class="search-input">
             <input type="text" name="album" placeholder="Album Name" bind:value={album} />
             <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
-            <button type="submit" {onclick}>Update</button>
+            <button type="submit" {onclick}>Search</button>
         </div>
 
         <div class="covers">
@@ -79,7 +79,7 @@
     .search {
         width: clamp(20rem, 18vw, 40rem);
         padding: 1rem 2rem 1rem 1.5rem;
-        border-right: 1px solid rgba(0, 0, 0, .25);
+        border-right: 1px solid rgba(0, 0, 0, .15);
         min-height: -webkit-fill-available;
     }
 
@@ -87,12 +87,12 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
 
     .search-input > input[type="text"] {
         border: none;
-        outline: 1px solid rgba(0, 0, 0, .25);
+        outline: 1px solid rgba(0, 0, 0, .15);
         padding: .75rem;
         border-radius: 0 100vw 100vw 0;
     }
@@ -118,7 +118,7 @@
         grid-template-columns: repeat(2, 1fr);
         gap: .5rem;
         overflow-y: auto;
-        max-height: 65%;
+        height: 65%;
         padding-right: .5rem;
     }
 
