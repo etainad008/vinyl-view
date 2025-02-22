@@ -86,7 +86,7 @@
                 <button class="back" onclick={onclickBack}>back</button>
             </header>
 
-            <img src={viewedRelease?.cover?.image} alt={viewedRelease?.title} class="release-image">
+            <img src={viewedRelease?.cover?.image} alt={viewedRelease?.title} class="release-image" />
 
             <h4 class="release-title">{viewedRelease?.title}</h4>
             <h5 class="release-artist">{viewedRelease?.artist}</h5>
@@ -178,6 +178,16 @@
         gap: .5rem;
         overflow-y: auto;
         max-height: 65%;
+        padding-right: .5rem;
+    }
+
+    .releases::-webkit-scrollbar {
+        background-color: transparent;
+    }
+
+    .releases::-webkit-scrollbar-thumb {
+        border-radius: 100vw;
+        background-color: springgreen;
     }
 
     .release {
