@@ -6,7 +6,7 @@ const parseAlbumData = (data: any): Album[] => {
 	return data.map((release: any) => {
 		return {
 			id: release.id,
-			name: release.title,
+			title: release.title,
 			artist: release["artist-credit"][0].name,
 			trackCount: release["track-count"],
 			releaseDate: release.date
@@ -15,7 +15,7 @@ const parseAlbumData = (data: any): Album[] => {
 };
 
 const getAlbumJSON = async (album: AlbumQuery) => {
-	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${album.title}" AND artist:"${album.artist}"&fmt=json`;
+	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${encodeURIComponent(album.title)}" AND artist:"${encodeURIComponent(album.artist)}"&fmt=json`;
 	const res = await fetch(API_URI);
 
 	return await res.json();
