@@ -156,6 +156,10 @@
         outline-color: springgreen;
     }
 
+    .search-input > input[type="text"]:-webkit-autofill {
+        -webkit-background-clip: text;
+    }
+
     .search-input > button[type="submit"] {
         border: none;
         background-color: springgreen;
