@@ -210,7 +210,7 @@
         transition: opacity 75ms ease-in;
     }
 
-    .release > button:hover {
+    .release > button:is(:hover, :focus, :active) {
         opacity: 1;
     }
 
