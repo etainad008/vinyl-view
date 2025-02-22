@@ -3,15 +3,15 @@ import type { AlbumQuery, MBID } from './types';
 const MAX_COVER_AMOUNT = 25;
 
 const getAlbumJSON = async (album: AlbumQuery) => {
-	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${album.name}" AND artist:"${album.artist}"&fmt=json`;
+	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${album.title}" AND artist:"${album.artist}"&fmt=json`;
 	const res = await fetch(API_URI);
 
 	return await res.json();
 };
 
 const getAlbumMBIDImp = async (album: AlbumQuery, maxAmount: number): Promise<MBID[]> => {
-	if (!album.name) {
-		throw Error('Album query must contain a non-empty album name');
+	if (!album.title) {
+		throw Error('Album query must contain a non-empty album title');
 	}
 
 	if (maxAmount < 1) {

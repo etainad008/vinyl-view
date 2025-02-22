@@ -7,7 +7,7 @@
     let artist: string = $state("");
 
     let query: AlbumQuery = $derived({
-        name: album,
+        title: album,
         artist: artist
     });
 
@@ -21,7 +21,7 @@
         <h2>Search</h2>
 
         <div class="search-input">
-            <input type="text" name="album" placeholder="Album Name" bind:value={album} />
+            <input type="text" name="album" placeholder="Album Title" bind:value={album} />
             <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
             <button type="submit" {onclick}>Search</button>
         </div>

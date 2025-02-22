@@ -1,6 +1,6 @@
 export interface AlbumQuery {
-    name: string,
-    artist: string
+    title: string;
+    artist: string;
 }
 
 export type MBID = string;
