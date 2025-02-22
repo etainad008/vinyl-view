@@ -47,7 +47,7 @@
     <aside class="sidebar">
         {#if currentSidebarView == "search"}
             <header>
-                <h2>Search</h2>
+                <h3>Search</h3>
             </header>
 
             <div class="search-input">
@@ -82,14 +82,16 @@
             </div>
         {:else if currentSidebarView == "release"}
             <header>
-                <h2>View Release</h2>
+                <h3>View Release</h3>
                 <button class="back" onclick={onclickBack}>back</button>
             </header>
 
             <img src={viewedRelease?.cover?.image} alt={viewedRelease?.title} class="release-image" />
 
-            <h4 class="release-title">{viewedRelease?.title}</h4>
-            <h5 class="release-artist">{viewedRelease?.artist}</h5>
+            <div class="release-info">
+                <h1 class="release-title">{viewedRelease?.title}</h1>
+                <h3 class="release-artist">{viewedRelease?.artist}</h3>
+            </div>
         {/if}
     </aside>
     <main></main>
@@ -98,7 +100,7 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-    :global(:root) {
+    :global(:root, *) {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
@@ -131,6 +133,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-block: 1.25rem;
     }
 
     .sidebar > header > button.back {
@@ -183,6 +186,7 @@
 
     .releases::-webkit-scrollbar {
         background-color: transparent;
+        width: .75rem;
     }
 
     .releases::-webkit-scrollbar-thumb {
@@ -193,8 +197,6 @@
     .release {
         display: grid;
         grid-template-areas: "stack";
-        min-width: 100%;
-        aspect-ratio: 1 / 1;
     }
 
     .release > button {
@@ -215,13 +217,23 @@
     }
 
     .release > img {
-        max-width: 100%;
         grid-area: stack;
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
         object-fit: cover;
+    }
+
+    .release-info {
+        margin-top: 1rem;
     }
 
     .release-image {
         width: 100%;
+    }
+
+    .release-artist {
+        font-weight: 400;
+        color: rgb(128, 128, 128)
     }
 
     main {
