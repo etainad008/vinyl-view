@@ -14,9 +14,9 @@ export interface AlbumCover {
 
 export interface Album {
     id: MBID;
-	name: string;
-	artist: string;
-	trackCount: number;
-	releaseDate: string;
+    title: string;
+    artist: string;
+    trackCount: number;
+    releaseDate: string;
     cover?: AlbumCover;
 }
