@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { getAlbumImages } from "$lib/api";
-    import type { AlbumQuery } from "$lib/types";
+    import { getAlbumReleases } from "$lib/api";
+    import type { AlbumQuery, Album } from "$lib/types";
 
-    let albumCoversPromise: Promise<Promise<string>[]> = $state(Promise.resolve([]));
+    let albumReleasesPromise: Promise<Promise<Album>[]> = $state(Promise.resolve([]));
     let album: string = $state("");
     let artist: string = $state("");
 
@@ -12,7 +12,7 @@
     });
 
     const onclick = async () => {
-        albumCoversPromise = getAlbumImages(query);
+        albumReleasesPromise = getAlbumReleases(query);
     }
 </script>
 
@@ -27,16 +27,16 @@
         </div>
 
         <div class="covers">
-            {#await albumCoversPromise}
+            {#await albumReleasesPromise}
                 <p>Getting images...</p>
-            {:then albumCovers}
-                {#if albumCovers.length > 0}
-                    {#each albumCovers as albumCover}
-                        {#await albumCover}
+            {:then albumReleases}
+                {#if albumReleases.length > 0}
+                    {#each albumReleases as albumRelease}
+                        {#await albumRelease}
                             <p>Loading...</p>
-                        {:then coverImage}
-                            {#if coverImage}
-                                <img src={coverImage} alt="Album Cover" />
+                        {:then release}
+                            {#if release.cover}
+                                <img src={release.cover.image} alt="Album Cover" />
                             {/if}
                         {/await}
                     {/each}

@@ -1,4 +1,4 @@
-import type { AlbumQuery, MBID, Album } from './types';
+import type { AlbumQuery, Album, AlbumCover } from './types';
 
 const MAX_COVER_AMOUNT = 25;
 
@@ -21,7 +21,7 @@ const getAlbumJSON = async (album: AlbumQuery) => {
 	return await res.json();
 };
 
-const getAlbumReleases = async (album: AlbumQuery, maxAmount: number): Promise<Album[]> => {
+const getAlbumReleasesImp = async (album: AlbumQuery, maxAmount: number): Promise<Album[]> => {
 	if (!album.title) {
 		throw Error('Album query must contain a non-empty album title');
 	}
@@ -42,19 +42,37 @@ const getAlbumReleases = async (album: AlbumQuery, maxAmount: number): Promise<A
 	);
 };
 
-const getAlbumImage = async (album: Album): Promise<string> => {
+const tryGetReleaseCover = async (album: Album): Promise<Album> => {
 	const res = await fetch(`https://coverartarchive.org/release/${album.id}`);
-    if (!res.ok) {
-        return Promise.resolve("");
-    }
+	if (!res.ok) {
+		album.cover = undefined;
+		return album;
+	}
 
 	const data: any = await res.json();
-	return data.images
-        .filter((image: any) => image.approved && image.front)
-        .toSorted((image: any) => image.id)[0].image;
+	data.images = data.images.filter((image: any) => image.approved && image.front);
+	if (data.images.length < 1) {
+		// no approved images
+		album.cover = undefined;
+		return album;
+	}
+
+	// we need to be consistent with our choices of images
+	// in case the API retrieves them in a different order
+	data.images.sort((image: any) => image.id);
+
+	const chosenImage = data.images[0];
+	album.cover = {
+		id: chosenImage.id,
+		approved: chosenImage.approved,
+		image: chosenImage.image,
+		front: chosenImage.front
+	};
+
+	return album;
 };
 
-export const getAlbumImages = async (album: AlbumQuery): Promise<Promise<string>[]> => {
-    const albumReleases: Album[] = await getAlbumReleases(album, 1);
-    return albumReleases.map(getAlbumImage);
-}
+export const getAlbumReleases = async (album: AlbumQuery): Promise<Promise<Album>[]> => {
+	const albumReleases: Album[] = await getAlbumReleasesImp(album, 6);
+	return albumReleases.map(tryGetReleaseCover);
+};
