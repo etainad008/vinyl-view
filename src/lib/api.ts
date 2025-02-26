@@ -1,47 +1,78 @@
-import type { AlbumQuery, MBID } from './types';
+import type { AlbumQuery, Album, AlbumCover } from './types';
 
 const MAX_COVER_AMOUNT = 25;
 
+const parseAlbumData = (data: any): Album[] => {
+    return data.map((release: any) => {
+        return {
+            id: release.id,
+            title: release.title,
+            artist: release['artist-credit'][0].name,
+            trackCount: release['track-count'],
+            releaseDate: release.date
+        } as Album;
+    });
+};
+
 const getAlbumJSON = async (album: AlbumQuery) => {
-	const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${album.name}" AND artist:"${album.artist}"&fmt=json`;
-	const res = await fetch(API_URI);
+    const API_URI = `https://musicbrainz.org/ws/2/release/?query=release:"${encodeURIComponent(album.title)}" AND artist:"${encodeURIComponent(album.artist)}"&fmt=json`;
+    const res = await fetch(API_URI);
 
-	return await res.json();
+    return await res.json();
 };
 
-const getAlbumMBIDImp = async (album: AlbumQuery, maxAmount: number): Promise<MBID[]> => {
-	if (!album.name) {
-		throw Error('Album query must contain a non-empty album name');
-	}
-
-	if (maxAmount < 1) {
-		throw Error('Amount must be positive');
-	}
-
-	const data = await getAlbumJSON(album);
-	if (data.count < 1 || !data.releases || data.releases.length < 1) {
-		return [];
-	}
-
-    return data.releases
-        .toSorted((first: any, second: any) => second.score - first.score)
-        .slice(0, maxAmount)
-        .map((release: any) => release.id);
-};
-
-const getAlbumImageByMBID = async (id: MBID): Promise<string> => {
-	const res = await fetch(`https://coverartarchive.org/release/${id}`);
-    if (!res.ok) {
-        return Promise.resolve("");
+const getAlbumReleasesImp = async (album: AlbumQuery, maxAmount: number): Promise<Album[]> => {
+    if (!album.title) {
+        throw Error('Album query must contain a non-empty album title');
     }
 
-	const data: any = await res.json();
-	return data.images
-        .filter((image: any) => image.approved && image.front)
-        .toSorted((image: any) => image.id)[0].image;
+    if (maxAmount < 1) {
+        throw Error('Amount must be positive');
+    }
+
+    const data = await getAlbumJSON(album);
+    if (data.count < 1 || !data.releases || data.releases.length < 1) {
+        return [];
+    }
+
+    return parseAlbumData(
+        data.releases
+            .toSorted((first: any, second: any) => second.score - first.score)
+            .slice(0, maxAmount)
+    );
 };
 
-export const getAlbumImages = async (album: AlbumQuery): Promise<Promise<string>[]> => {
-    const albumMBIDs: MBID[] = await getAlbumMBIDImp(album, MAX_COVER_AMOUNT);
-    return albumMBIDs.map(getAlbumImageByMBID);
-}
+const tryGetReleaseCover = async (album: Album): Promise<Album> => {
+    const res = await fetch(`https://coverartarchive.org/release/${album.id}`);
+    if (!res.ok) {
+        album.cover = undefined;
+        return album;
+    }
+
+    const data: any = await res.json();
+    data.images = data.images.filter((image: any) => image.approved && image.front);
+    if (data.images.length < 1) {
+        // no approved images
+        album.cover = undefined;
+        return album;
+    }
+
+    // we need to be consistent with our choices of images
+    // in case the API retrieves them in a different order
+    data.images.sort((image: any) => image.id);
+
+    const chosenImage = data.images[0];
+    album.cover = {
+        id: chosenImage.id,
+        approved: chosenImage.approved,
+        image: chosenImage.image,
+        front: chosenImage.front
+    };
+
+    return album;
+};
+
+export const getAlbumReleases = async (album: AlbumQuery): Promise<Promise<Album>[]> => {
+    const albumReleases: Album[] = await getAlbumReleasesImp(album, 6);
+    return albumReleases.map(tryGetReleaseCover);
+};
