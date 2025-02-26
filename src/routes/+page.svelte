@@ -15,7 +15,9 @@
     let query: AlbumQuery = $derived({
         title: album,
         artist: artist
-    }); 
+    });
+
+    let previewedReleaseCover: Album | undefined = $state();
 
     const onclick = async () => {
         albumReleasesPromise = getAlbumReleases(query);
@@ -64,6 +66,10 @@
     const onclickShare = async () => {
         await window.navigator.clipboard.writeText(window.location.toString());
     };
+
+    const onclickPreviewCover = async (release: Album) => {
+        previewedReleaseCover = release;
+    };
 </script>
 
 <div class="container">
@@ -109,7 +115,11 @@
                 <button class="back" onclick={onclickBack}>back</button>
             </header>
 
-            <img src={viewedRelease?.cover?.image} alt={viewedRelease?.title} class="release-image" />
+            <div class="release-image">
+                <img src={viewedRelease?.cover?.image} alt={viewedRelease?.title} />
+                <button aria-label="Preview {viewedRelease?.title}'s cover" onclick={() => onclickPreviewCover(viewedRelease as Album)}></button>
+            </div>
+
             <div class="release-controls">
                 <button class="add" aria-label="Add">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,6 +152,11 @@
             </div>
         {/if}
     </aside>
+    {#if previewedReleaseCover}
+        <button class="cover-preview">
+            <img src={previewedReleaseCover.cover?.image} alt="{previewedReleaseCover.title}'s cover">
+        </button>
+    {/if}
     <main></main>
 </div>
 
@@ -313,12 +328,43 @@
     }
 
     .release-image {
+        display: grid;
+        grid-template-areas: "stack";
+    }
+
+    .release-image > img {
         width: 100%;
+        aspect-ratio: 1 / 1;
+        grid-area: stack;
+    }
+
+    .release-image > button {
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        grid-area: stack;
+        border: none;
+        outline: none;
     }
 
     .release-artist {
         font-weight: 400;
         color: rgb(90, 90, 90);
+    }
+
+    .cover-preview {
+        position: absolute;
+        width: 100vw;
+        height: 100svh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, .5);
+    }
+
+    .cover-preview > img {
+        width: clamp(20rem, 75vw, 75svh);
+        aspect-ratio: 1 / 1;
     }
 
     main {
