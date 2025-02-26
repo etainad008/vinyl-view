@@ -2,10 +2,14 @@
 // for information about these interfaces
 declare global {
 	namespace App {
+		import { Album } from "$lib/types";
+
 		// interface Error {}
 		// interface Locals {}
 		// interface PageData {}
-		// interface PageState {}
+		interface PageState {
+            release: Album;
+        }
 		// interface Platform {}
 	}
 }
