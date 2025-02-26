@@ -156,6 +156,7 @@
         <button class="cover-preview">
             <img src={previewedReleaseCover.cover?.image} alt="{previewedReleaseCover.title}'s cover">
         </button>
+        <!-- #I HAVE THE BEST DAD IN THE WORLD -->
     {/if}
     <main></main>
 </div>
