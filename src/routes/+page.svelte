@@ -15,8 +15,17 @@
         artist: artist
     });
 
-    const onclick = async () => {
+    const onclickSearch = async () => {
         albumReleasesPromise = getAlbumReleases(query);
+
+        const url = new URL(page.url);
+        url.searchParams.set('qtitle', query.title.trim());
+
+        if (query.artist?.trim()) {
+            url.searchParams.set('qartist', query.artist.trim());
+        }
+
+        pushState(url, { query: query });
     };
 
     const onclickRelease = (release: Album) => {
@@ -90,7 +99,7 @@
                 <img src={page.state.release.cover?.image} alt={page.state.release.title} />
                 <button
                     aria-label="Preview {page.state.release.title}'s cover"
-                    onclick={() => onclickPreviewCover(page.state.release)}
+                    onclick={() => onclickPreviewCover(page.state.release as Album)}
                 ></button>
             </div>
 
@@ -107,7 +116,7 @@
                 <button
                     class="download"
                     aria-label="Download"
-                    onclick={() => onclickDownload(page.state.release)}
+                    onclick={() => onclickDownload(page.state.release as Album)}
                 >
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -130,7 +139,7 @@
                 <button
                     class="copy"
                     aria-label="Copy"
-                    onclick={() => onclickCopy(page.state.release)}
+                    onclick={() => onclickCopy(page.state.release as Album)}
                 >
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -156,43 +165,47 @@
             <div class="search-input">
                 <input type="text" name="album" placeholder="Album Title" bind:value={album} />
                 <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
-                <button type="submit" {onclick}>search</button>
+                <button type="submit" onclick={onclickSearch}>search</button>
             </div>
 
-            <div class="releases">
-                {#await albumReleasesPromise}
-                    <p>Getting images...</p>
-                {:then albumReleases}
-                    {#if albumReleases.length > 0}
-                        {#each albumReleases as albumRelease (albumRelease)}
-                            {#await albumRelease}
-                                <p>Loading...</p>
-                            {:then release}
-                                {#if release.cover}
-                                    <div class="release">
-                                        <img
-                                            src={release.cover.image}
-                                            alt="Album cover for {release.title}"
-                                            in:fade|global={{ duration: 100 }}
-                                        />
-                                        <button onclick={() => onclickRelease(release)}
-                                            >{release.title}</button
-                                        >
-                                    </div>
-                                {/if}
-                            {/await}
-                        {/each}
-                    {:else}
-                        <p>No covers found!</p>
-                    {/if}
-                {:catch err: Error}
-                    <p>{err.message}</p>
-                {/await}
-            </div>
+            {#if albumReleasesPromise && page.state.query}
+                <div class="releases">
+                    {#await albumReleasesPromise}
+                        <p>Getting images...</p>
+                    {:then albumReleases}
+                        {#if albumReleases.length > 0}
+                            {#each albumReleases as albumRelease (albumRelease)}
+                                {#await albumRelease}
+                                    <p>Loading...</p>
+                                {:then release}
+                                    {#if release.cover}
+                                        <div class="release">
+                                            <img
+                                                src={release.cover.image}
+                                                alt="Album cover for {release.title}"
+                                                in:fade|global={{ duration: 100 }}
+                                            />
+                                            <button onclick={() => onclickRelease(release)}
+                                                >{release.title}</button
+                                            >
+                                        </div>
+                                    {/if}
+                                {/await}
+                            {/each}
+                        {:else}
+                            <p>No covers found!</p>
+                        {/if}
+                    {:catch err: Error}
+                        <p>{err.message}</p>
+                    {/await}
+                </div>
+            {:else}
+                <p>Start searching!</p>
+            {/if}
         {/if}
     </aside>
 
-    {#if page.state.coverPreview}
+    {#if page.state.coverPreview && page.state.release}
         <button
             class="cover-preview"
             onclick={onclickExitCoverPreview}

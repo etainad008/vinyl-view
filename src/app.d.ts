@@ -1,15 +1,17 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
+
+import type { Album, AlbumQuery } from '$lib/types';
+
 // for information about these interfaces
 declare global {
 	namespace App {
-		import { Album } from "$lib/types";
-
 		// interface Error {}
 		// interface Locals {}
 		// interface PageData {}
 		interface PageState {
-            release: Album;
+            release?: Album;
             coverPreview?: boolean;
+            query?: AlbumQuery;
         }
 		// interface Platform {}
 	}
