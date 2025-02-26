@@ -89,48 +89,7 @@
 
 <div class="container">
     <aside class="sidebar">
-        {#if currentSidebarView == 'search'}
-            <header>
-                <h3>Search</h3>
-            </header>
-
-            <div class="search-input">
-                <input type="text" name="album" placeholder="Album Title" bind:value={album} />
-                <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
-                <button type="submit" {onclick}>search</button>
-            </div>
-
-            <div class="releases">
-                {#await albumReleasesPromise}
-                    <p>Getting images...</p>
-                {:then albumReleases}
-                    {#if albumReleases.length > 0}
-                        {#each albumReleases as albumRelease (albumRelease)}
-                            {#await albumRelease}
-                                <p>Loading...</p>
-                            {:then release}
-                                {#if release.cover}
-                                    <div class="release">
-                                        <img
-                                            src={release.cover.image}
-                                            alt="Album cover for {release.title}"
-                                            in:fade|global={{ duration: 100 }}
-                                        />
-                                        <button onclick={() => onclickRelease(release)}
-                                            >{release.title}</button
-                                        >
-                                    </div>
-                                {/if}
-                            {/await}
-                        {/each}
-                    {:else}
-                        <p>No covers found!</p>
-                    {/if}
-                {:catch err: Error}
-                    <p>{err.message}</p>
-                {/await}
-            </div>
-        {:else if page.state.release}
+        {#if page.state.release}
             <header>
                 <h3>View Release</h3>
                 <button class="back" onclick={onclickBack}>back</button>
@@ -197,6 +156,47 @@
                     <h1 class="release-title">{page.state.release.title}</h1>
                     <h3 class="release-artist">{page.state.release.artist}</h3>
                 </div>
+            </div>
+        {:else}
+            <header>
+                <h3>Search</h3>
+            </header>
+
+            <div class="search-input">
+                <input type="text" name="album" placeholder="Album Title" bind:value={album} />
+                <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
+                <button type="submit" {onclick}>search</button>
+            </div>
+
+            <div class="releases">
+                {#await albumReleasesPromise}
+                    <p>Getting images...</p>
+                {:then albumReleases}
+                    {#if albumReleases.length > 0}
+                        {#each albumReleases as albumRelease (albumRelease)}
+                            {#await albumRelease}
+                                <p>Loading...</p>
+                            {:then release}
+                                {#if release.cover}
+                                    <div class="release">
+                                        <img
+                                            src={release.cover.image}
+                                            alt="Album cover for {release.title}"
+                                            in:fade|global={{ duration: 100 }}
+                                        />
+                                        <button onclick={() => onclickRelease(release)}
+                                            >{release.title}</button
+                                        >
+                                    </div>
+                                {/if}
+                            {/await}
+                        {/each}
+                    {:else}
+                        <p>No covers found!</p>
+                    {/if}
+                {:catch err: Error}
+                    <p>{err.message}</p>
+                {/await}
             </div>
         {/if}
     </aside>
