@@ -15,8 +15,6 @@
         artist: artist
     });
 
-    let previewedReleaseCover: Album | undefined = $state();
-
     const onclick = async () => {
         albumReleasesPromise = getAlbumReleases(query);
     };
@@ -63,12 +61,19 @@
     };
 
     const onclickPreviewCover = (release: Album) => {
-        previewedReleaseCover = release;
+        const url = new URL(page.url);
+        url.searchParams.set('release', release.id);
+        url.searchParams.set('coverid', release.cover?.id as string);
+        pushState(url, {
+            release: release,
+            coverPreview: true
+        });
+        
         window.addEventListener('keydown', exitPreviewOnEscape);
     };
 
     const onclickExitCoverPreview = () => {
-        previewedReleaseCover = undefined;
+        history.back();
         window.removeEventListener('keydown', exitPreviewOnEscape);
     };
 </script>
@@ -187,16 +192,16 @@
         {/if}
     </aside>
 
-    {#if previewedReleaseCover}
+    {#if page.state.coverPreview}
         <button
             class="cover-preview"
             onclick={onclickExitCoverPreview}
             transition:fade={{ duration: 75 }}
         >
             <img
-                src={previewedReleaseCover.cover?.image}
-                alt="{previewedReleaseCover.title}'s cover"
-                role="{previewedReleaseCover.title}'s cover"
+                src={page.state.release.cover?.image}
+                alt="{page.state.release.title}'s cover"
+                role="{page.state.release.title}'s cover"
                 onclick={(e: Event) => e.stopPropagation()}
             />
         </button>

@@ -9,6 +9,7 @@ declare global {
 		// interface PageData {}
 		interface PageState {
             release: Album;
+            coverPreview?: boolean;
         }
 		// interface Platform {}
 	}
