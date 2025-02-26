@@ -15,11 +15,11 @@
     let query: AlbumQuery = $derived({
         title: album,
         artist: artist
-    });
+    }); 
 
     const onclick = async () => {
         albumReleasesPromise = getAlbumReleases(query);
-    }
+    };
 
     const onclickRelease = (release: Album) => {
         viewedRelease = release;
@@ -29,7 +29,7 @@
         window.history.pushState(null, "", url.toString());
 
         sidebarViewStack.push("release");
-    }
+    };
 
     const onclickBack = () => {
         if (sidebarViewStack.length > 1) {
@@ -40,15 +40,30 @@
                 window.history.pushState(null, "", url.toString());
             }
         }
-    }
+    };
+
+    const onclickDownload = async (release: Album) => {
+        const res = await fetch(release.cover?.image as string);
+        const blob = await res.blob();
+        const window_url = window.URL || window.webkitURL;
+        const link = window_url.createObjectURL(blob);
+
+        const image_name: string = new URL(release.cover?.image as string).pathname.split('/').pop() as string;
+        let a = document.createElement("a");
+        a.setAttribute("download", image_name);
+        a.setAttribute("href", link);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
 
     const onclickCopy = async (release: Album) => {
         await window.navigator.clipboard.writeText(release.id);
-    }
+    };
 
     const onclickShare = async () => {
         await window.navigator.clipboard.writeText(window.location.toString());
-    }
+    };
 </script>
 
 <div class="container">
@@ -101,7 +116,7 @@
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 12.75V18H12.75V12.75H18V11.25H12.75V6H11.25V11.25H6V12.75H11.25Z" />
                     </svg>
                 </button>
-                <button class="download" aria-label="Download">
+                <button class="download" aria-label="Download" onclick={() => onclickDownload(viewedRelease as Album)}>
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 15.9853L15.182 12.8033L14.1213 11.7427L12.75 13.114L12.75 5.25L11.25 5.25L11.25 13.114L9.8787 11.7427L8.81804 12.8033L12 15.9853ZM12 13.864L12 13.864L12.0001 13.864L12 13.864Z" />
                         <path d="M18 17.25L18 18.75L6 18.75L6 17.25L18 17.25Z" />
