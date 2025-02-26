@@ -10,9 +10,6 @@
     let album: string = $state('');
     let artist: string = $state('');
 
-    let sidebarViewStack: string[] = $state(['search']);
-    let currentSidebarView: string = $derived(sidebarViewStack.at(-1) as string);
-
     let query: AlbumQuery = $derived({
         title: album,
         artist: artist
@@ -25,24 +22,13 @@
     };
 
     const onclickRelease = (release: Album) => {
-        const url = new URL(window.location.href);
+        const url = new URL(page.url);
         url.searchParams.set('release', release.id);
-        pushState(url.toString(), {
-            release: release
-        });
-
-        sidebarViewStack.push('release');
+        pushState(url, { release: release });
     };
 
     const onclickBack = () => {
-        if (sidebarViewStack.length > 1) {
-            const currentState: string = sidebarViewStack.pop() as string;
-            if (currentState == 'release') {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('release');
-                history.back();
-            }
-        }
+        history.back();
     };
 
     const onclickDownload = async (release: Album) => {
