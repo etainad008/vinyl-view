@@ -67,8 +67,20 @@
         await window.navigator.clipboard.writeText(window.location.toString());
     };
 
-    const onclickPreviewCover = async (release: Album) => {
+    const exitPreviewOnEscape = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+            onclickExitCoverPreview();
+        }
+    };
+
+    const onclickPreviewCover = (release: Album) => {
         previewedReleaseCover = release;
+        window.addEventListener("keydown", exitPreviewOnEscape);
+    };
+
+    const onclickExitCoverPreview = () => {
+        previewedReleaseCover = undefined;
+        window.removeEventListener("keydown", exitPreviewOnEscape);
     };
 </script>
 
@@ -152,12 +164,18 @@
             </div>
         {/if}
     </aside>
+
     {#if previewedReleaseCover}
-        <button class="cover-preview">
-            <img src={previewedReleaseCover.cover?.image} alt="{previewedReleaseCover.title}'s cover">
+        <button class="cover-preview" onclick={onclickExitCoverPreview} transition:fade={{duration: 75}}>
+            <img
+                src={previewedReleaseCover.cover?.image}
+                alt="{previewedReleaseCover.title}'s cover"
+                role="{previewedReleaseCover.title}'s cover"
+                onclick={(e: Event) => e.stopPropagation()} />
         </button>
         <!-- #I HAVE THE BEST DAD IN THE WORLD -->
     {/if}
+
     <main></main>
 </div>
 
@@ -292,6 +310,7 @@
         align-items: flex-start;
         justify-content: flex-end;
         gap: .5rem;
+        margin-block: .5rem 1rem;
     }
 
     .release-controls > button {
@@ -325,7 +344,6 @@
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
-        margin-top: 1rem;
     }
 
     .release-image {
@@ -341,11 +359,12 @@
 
     .release-image > button {
         width: 100%;
-        height: 100%;
+        aspect-ratio: 1 / 1;
         opacity: 0;
         grid-area: stack;
         border: none;
         outline: none;
+        cursor: pointer;
     }
 
     .release-artist {
@@ -360,12 +379,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: rgba(0, 0, 0, .5);
+        background-color: rgba(0, 0, 0, .75);
+        border: none;
+        outline: none;
+        cursor: pointer;
     }
 
     .cover-preview > img {
         width: clamp(20rem, 75vw, 75svh);
         aspect-ratio: 1 / 1;
+        cursor: initial;
     }
 
     main {
