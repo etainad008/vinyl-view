@@ -4,17 +4,16 @@
 
     import { fade } from 'svelte/transition';
     import { pushState } from '$app/navigation';
-
     import { getAlbumReleases } from '$lib/api';
     import type { AlbumQuery, Album } from '$lib/types';
     import { page } from '$app/state';
 
     let albumReleasesPromise: Promise<Promise<Album>[]> = $state(Promise.resolve([]));
-    let album: string = $state('');
+    let title: string = $state('');
     let artist: string = $state('');
 
     let query: AlbumQuery = $derived({
-        title: album,
+        title: title,
         artist: artist
     });
 
@@ -61,13 +60,13 @@
             </header>
 
             <div class="search-input">
-                <input type="text" name="album" placeholder="Album Title" bind:value={album} />
+                <input type="text" name="album" placeholder="Album Title" bind:value={title} />
                 <input type="text" name="artist" placeholder="Artist" bind:value={artist} />
                 <button type="submit" onclick={onclickSearch}>search</button>
             </div>
 
             {#if page.state.query}
-                <ReleaseGrid albumReleasesPromise={albumReleasesPromise}/>
+                <ReleaseGrid {albumReleasesPromise}/>
             {:else}
                 <p>Start searching!</p>
             {/if}
@@ -89,24 +88,10 @@
         </button>
         <!-- #I HAVE THE BEST DAD IN THE WORLD -->
     {/if}
-
-    <main></main>
 </div>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-    :global(:root, *) {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    :global(body) {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        overflow: hidden;
-    }
 
     button,
     input {
@@ -189,9 +174,5 @@
         width: clamp(20rem, 75vw, 75svh);
         aspect-ratio: 1 / 1;
         cursor: initial;
-    }
-
-    main {
-        padding: 2rem;
     }
 </style>

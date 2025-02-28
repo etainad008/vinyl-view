@@ -1,7 +1,6 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
     import { pushState } from '$app/navigation';
-
     import type { Album } from '$lib/types';
     import { page } from '$app/state';
 
@@ -47,18 +46,6 @@
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-    :global(:root, *) {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    :global(body) {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        overflow: hidden;
-    }
 
     button {
         font-family: 'Poppins', sans-serif;

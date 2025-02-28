@@ -36,10 +36,10 @@
             release: release,
             coverPreview: true
         });
-        
+
         window.addEventListener('keydown', exitPreviewOnEscape);
     };
-    
+
     const exitPreviewOnEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             onclickExitCoverPreview();
@@ -60,7 +60,6 @@
             onclick={() => onclickPreviewCover(page.state.release as Album)}
         ></button>
     </div>
-
     <div class="release-controls">
         <button class="add" aria-label="Add">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -129,18 +128,6 @@
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-    :global(:root, *) {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    :global(body) {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        overflow: hidden;
-    }
 
     button {
         font-family: 'Poppins', sans-serif;
@@ -231,9 +218,8 @@
     }
 
     .data-title {
-        font-size: .85rem;
+        font-size: 0.85rem;
         font-weight: 400;
         color: rgb(90, 90, 90);
     }
-
 </style>
