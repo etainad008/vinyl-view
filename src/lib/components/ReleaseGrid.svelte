@@ -25,7 +25,7 @@
                     {#if release.cover}
                         <div class="release">
                             <img
-                                src={release.cover.image}
+                                src="https://coverartarchive.org/release/{release.id}/front-250"
                                 alt="Album cover for {release.title}"
                                 in:fade|global={{ duration: 100 }}
                             />
