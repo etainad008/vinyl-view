@@ -2,6 +2,8 @@
     import { pushState } from '$app/navigation';
     import type { Album } from '$lib/types';
     import { page } from '$app/state';
+    import { ToastContainer, FlatToast }  from "svelte-toasts";
+    import { showToast } from '$lib/toastMessage';
 
     const onclickDownload = async (release: Album) => {
         const res = await fetch(release.cover?.image as string);
@@ -22,6 +24,7 @@
 
     const onclickCopy = async (release: Album) => {
         await window.navigator.clipboard.writeText(release.id);
+        showToast("Copied to clipboard", 2000);
     };
 
     const onclickShare = async () => {
@@ -124,6 +127,10 @@
             </div>
         </div>
     </div>
+
+    <ToastContainer placement="bottom-right" let:data={data}>
+        <FlatToast {data} /> <!-- Provider template for your toasts -->
+    </ToastContainer>
 </div>
 
 <style>
