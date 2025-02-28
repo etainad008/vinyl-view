@@ -91,7 +91,7 @@
     <aside class="sidebar">
         {#if page.state.release}
             <header>
-                <h3>View Release</h3>
+                <h4>View Release</h4>
                 <button class="back" onclick={onclickBack}>back</button>
             </header>
 
@@ -152,14 +152,24 @@
             </div>
 
             <div class="release-info">
-                <div>
-                    <h1 class="release-title">{page.state.release.title}</h1>
-                    <h3 class="release-artist">{page.state.release.artist}</h3>
+                <header>
+                    <h3 class="release-title">{page.state.release.title}</h3>
+                    <h4 class="release-artist">{page.state.release.artist}</h4>
+                </header>
+                <div class="data-cards">
+                    <div>
+                        <p>{page.state.release.releaseDate}</p>
+                        <p class="data-title">Released</p>
+                    </div>
+                    <div>
+                        <p>{page.state.release.trackCount}</p>
+                        <p class="data-title">Tracks</p>
+                    </div>
                 </div>
             </div>
         {:else}
             <header>
-                <h3>Search</h3>
+                <h4>Search</h4>
             </header>
 
             <div class="search-input">
@@ -356,12 +366,12 @@
         align-items: flex-start;
         justify-content: flex-end;
         gap: 0.5rem;
-        margin-block: 0.5rem 1rem;
+        margin-block: 0.5rem;
     }
 
     .release-controls > button {
         display: flex;
-        width: 1.75rem;
+        width: 1.25rem;
         aspect-ratio: 1 / 1;
         background-color: transparent;
         border: none;
@@ -378,18 +388,12 @@
     }
 
     .release-controls > button:first-child {
-        width: 2.25rem;
+        width: 1.75rem;
         margin-right: auto;
     }
 
     .release-controls > button:first-child > svg {
         fill: black;
-    }
-
-    .release-info {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
     }
 
     .release-image {
@@ -419,7 +423,30 @@
         outline: auto;
     }
 
-    .release-artist {
+    .release-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .release-info .release-artist {
+        font-weight: 400;
+        color: rgb(90, 90, 90);
+    }
+
+    .release-info > .data-cards {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .release-info > .data-cards > * {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .data-title {
+        font-size: .85rem;
         font-weight: 400;
         color: rgb(90, 90, 90);
     }
